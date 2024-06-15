@@ -1,6 +1,6 @@
 package com.example.HealthData.Controllers;
 
-import com.example.HealthData.Models.HealthDataSummary;
+import com.example.HealthData.SummaryClasses.HealthDataSummary;
 import com.example.HealthData.Services.HealthDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;

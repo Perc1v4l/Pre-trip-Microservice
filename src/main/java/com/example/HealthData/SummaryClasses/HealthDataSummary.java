@@ -1,5 +1,6 @@
-package com.example.HealthData.Models;
+package com.example.HealthData.SummaryClasses;
 
+import com.example.HealthData.Models.HealthData;
 import lombok.Data;
 
 @Data

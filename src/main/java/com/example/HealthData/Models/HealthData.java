@@ -1,13 +1,17 @@
 package com.example.HealthData.Models;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import java.util.Date;
 
 @Data
 @Entity
 @Table(name = "health_data")
+@NoArgsConstructor
+@AllArgsConstructor
 public class HealthData {
 
     @Id

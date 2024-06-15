@@ -1,10 +1,10 @@
 package com.example.HealthData.Services;
 
 import com.example.HealthData.Models.HealthData;
-import com.example.HealthData.Models.HealthDataSummary;
 import com.example.HealthData.Models.User;
 import com.example.HealthData.Repositories.HealthDataRepository;
 import com.example.HealthData.Repositories.UserRepository;
+import com.example.HealthData.SummaryClasses.HealthDataSummary;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
