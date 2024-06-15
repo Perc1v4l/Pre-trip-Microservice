@@ -9,4 +9,5 @@ public class HealthDataSummary {
     private double averageBloodPressureDiastolic;
     private double averagePulse;
     private double averageBloodAlcoholLevel;
+    private double averageTemperature;
 }

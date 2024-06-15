@@ -21,7 +21,7 @@ public class HealthDataService {
     private HealthDataRepository healthDataRepository;
 
     @Transactional
-    public void saveHealthData(String idfv, int bloodPressureSystolic, int bloodPressureDiastolic, int pulse, double bloodAlcoholLevel) {
+    public void saveHealthData(String idfv, int bloodPressureSystolic, int bloodPressureDiastolic, int pulse, double bloodAlcoholLevel, double temperature) {
         User user = userRepository.findByIdfv(idfv);
         if (user == null) {
             user = new User();
@@ -35,6 +35,7 @@ public class HealthDataService {
         healthData.setBloodPressureDiastolic(bloodPressureDiastolic);
         healthData.setPulse(pulse);
         healthData.setBloodAlcoholLevel(bloodAlcoholLevel);
+        healthData.setTemperature(temperature);
 
         healthDataRepository.save(healthData);
     }
@@ -52,6 +53,7 @@ public class HealthDataService {
         OptionalDouble avgBloodPressureDiastolic = healthDataList.stream().mapToInt(HealthData::getBloodPressureDiastolic).average();
         OptionalDouble avgPulse = healthDataList.stream().mapToInt(HealthData::getPulse).average();
         OptionalDouble avgBloodAlcoholLevel = healthDataList.stream().mapToDouble(HealthData::getBloodAlcoholLevel).average();
+        OptionalDouble avgTemperature = healthDataList.stream().mapToDouble(HealthData::getTemperature).average();
 
         HealthDataSummary summary = new HealthDataSummary();
         summary.setLatestData(latestData);
@@ -59,6 +61,7 @@ public class HealthDataService {
         summary.setAverageBloodPressureDiastolic(avgBloodPressureDiastolic.isPresent() ? avgBloodPressureDiastolic.getAsDouble() : 0);
         summary.setAveragePulse(avgPulse.isPresent() ? avgPulse.getAsDouble() : 0);
         summary.setAverageBloodAlcoholLevel(avgBloodAlcoholLevel.isPresent() ? avgBloodAlcoholLevel.getAsDouble() : 0);
+        summary.setAverageTemperature(avgTemperature.isPresent() ? avgTemperature.getAsDouble() : 0);
 
         return summary;
     }

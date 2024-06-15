@@ -29,6 +29,9 @@ public class HealthData {
     @Column(name = "blood_alcohol_level")
     private double bloodAlcoholLevel;
 
+    @Column(name = "temperature")
+    private double temperature;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)

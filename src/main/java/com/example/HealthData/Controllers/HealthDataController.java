@@ -26,8 +26,8 @@ public class HealthDataController {
             int bloodPressureDiastolic = (int) healthData.get("blood_pressure_diastolic");
             int pulse = (int) healthData.get("pulse");
             double bloodAlcoholLevel = (double) healthData.get("blood_alcohol_level");
-
-            healthDataService.saveHealthData(idfv, bloodPressureSystolic, bloodPressureDiastolic, pulse, bloodAlcoholLevel);
+            double temperature = (double) healthData.get("temperature");
+            healthDataService.saveHealthData(idfv, bloodPressureSystolic, bloodPressureDiastolic, pulse, bloodAlcoholLevel, temperature);
             return ResponseEntity.status(HttpStatus.CREATED).body("Health data saved successfully.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to save health data: " + e.getMessage());
