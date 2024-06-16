@@ -1,7 +1,9 @@
 package com.example.HealthData.Services;
 
 import com.example.HealthData.Models.PhysicalActivity;
+import com.example.HealthData.Models.User;
 import com.example.HealthData.Repositories.PhysicalActivityRepository;
+import com.example.HealthData.Repositories.UserRepository;
 import com.example.HealthData.SummaryClasses.PhysicalActivitySummary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,11 +20,20 @@ public class PhysicalActivityService {
     @Autowired
     private PhysicalActivityRepository repository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     public List<PhysicalActivity> getAll() {
         return repository.findAll();
     }
 
     public PhysicalActivity save(PhysicalActivity activity) {
+        User user = userRepository.findByIdfv(activity.getUserIdfv());
+        if (user == null) {
+            user = new User();
+            user.setIdfv(activity.getUserIdfv());
+            user = userRepository.save(user);
+        }
         return repository.save(activity);
     }
 

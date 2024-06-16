@@ -1,7 +1,9 @@
 package com.example.HealthData.Services;
 
 import com.example.HealthData.Models.BodyMeasurement;
+import com.example.HealthData.Models.User;
 import com.example.HealthData.Repositories.BodyMeasurementRepository;
+import com.example.HealthData.Repositories.UserRepository;
 import com.example.HealthData.SummaryClasses.BodyMeasurementSummary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,12 +17,21 @@ import java.util.List;
 public class BodyMeasurementService {
     @Autowired
     private BodyMeasurementRepository repository;
+    @Autowired
+    private UserRepository userRepository;
 
     public List<BodyMeasurement> getAll() {
         return repository.findAll();
     }
 
     public BodyMeasurement save(BodyMeasurement measurement) {
+        User user = userRepository.findByIdfv(measurement.getUserIdfv());
+        if (user == null) {
+            user = new User();
+            user.setIdfv(measurement.getUserIdfv());
+            user = userRepository.save(user);
+        }
+
         return repository.save(measurement);
     }
 

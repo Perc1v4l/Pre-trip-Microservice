@@ -11,4 +11,5 @@ import java.util.List;
 public interface PhysicalActivityRepository extends JpaRepository<PhysicalActivity, Long> {
     @Query("SELECT h FROM HealthData h WHERE h.userIdfv = :idfv AND h.createdAt BETWEEN :startDate AND :endDate")
     List<PhysicalActivity> findByUserIdfvAndDateRange(@Param("idfv") String idfv, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+
 }

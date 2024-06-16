@@ -1,6 +1,8 @@
 package com.example.HealthData.Services;
 
+import com.example.HealthData.Models.User;
 import com.example.HealthData.Models.Workout;
+import com.example.HealthData.Repositories.UserRepository;
 import com.example.HealthData.Repositories.WorkoutRepository;
 import com.example.HealthData.SummaryClasses.WorkoutSummary;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +16,21 @@ import java.util.List;
 public class WorkoutService {
     @Autowired
     private WorkoutRepository repository;
+    @Autowired
+    private UserRepository userRepository;
 
     public List<Workout> getAll() {
         return repository.findAll();
     }
 
     public Workout save(Workout workout) {
+        User user = userRepository.findByIdfv(workout.getUserIdfv());
+        if (user == null) {
+            user = new User();
+            user.setIdfv(workout.getUserIdfv());
+            user = userRepository.save(user);
+        }
+
         return repository.save(workout);
     }
 

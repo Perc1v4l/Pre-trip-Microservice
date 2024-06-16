@@ -1,7 +1,9 @@
 package com.example.HealthData.Services;
 
 import com.example.HealthData.Models.Sleep;
+import com.example.HealthData.Models.User;
 import com.example.HealthData.Repositories.SleepRepository;
+import com.example.HealthData.Repositories.UserRepository;
 import com.example.HealthData.SummaryClasses.SleepSummary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,12 +17,20 @@ import java.util.List;
 public class SleepService {
     @Autowired
     private SleepRepository repository;
+    @Autowired
+    private UserRepository userRepository;
 
     public List<Sleep> getAll() {
         return repository.findAll();
     }
 
     public Sleep save(Sleep sleep) {
+        User user = userRepository.findByIdfv(sleep.getUserIdfv());
+        if (user == null) {
+            user = new User();
+            user.setIdfv(sleep.getUserIdfv());
+            user = userRepository.save(user);
+        }
         return repository.save(sleep);
     }
 
