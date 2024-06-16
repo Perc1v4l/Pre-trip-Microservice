@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 @Data
 @Entity
@@ -28,5 +29,6 @@ public class BodyMeasurement {
     private double weight;
 
     @Column(name = "measurement_date")
-    private LocalDate measurementDate;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date measurementDate;
 }

@@ -7,10 +7,13 @@ import com.example.HealthData.Repositories.UserRepository;
 import com.example.HealthData.SummaryClasses.SleepSummary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -34,55 +37,23 @@ public class SleepService {
         return repository.save(sleep);
     }
 
-    public List<Sleep> getByPeriod(String userIdfv, LocalDate start, LocalDate end) {
-        return repository.findAllByUserIdfvAndSleepDateBetween(userIdfv, start, end);
-    }
+    @Transactional(readOnly = true)
+    public SleepSummary getSleepSummary(String idfv, Date startDate, Date endDate) {
+        List<Sleep> sleepList = repository.findAllByUserIdfvAndSleepDateBetween(idfv, startDate, endDate);
 
-    public SleepSummary getSummaryByPeriod(String userIdfv, String periodType) {
-        LocalDate now = LocalDate.now();
-        LocalDate startDate;
-
-        switch (periodType.toLowerCase()) {
-            case "day":
-                startDate = now;
-                break;
-            case "week":
-                startDate = now.minusWeeks(1);
-                break;
-            case "month":
-                startDate = now.minusMonths(1);
-                break;
-            case "half-year":
-                startDate = now.minusMonths(6);
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid period type: " + periodType);
+        if (sleepList.isEmpty()) {
+            return null;
         }
 
-        List<Sleep> sleepRecords = getByPeriod(userIdfv, startDate, now);
+        Sleep latestSleep = sleepList.get(sleepList.size() - 1);
+
+        double totalSleepDuration = sleepList.stream().mapToDouble(Sleep::getSleepDuration).sum();
+        double averageSleepDuration = sleepList.stream().mapToDouble(Sleep::getSleepDuration).average().orElse(0);
 
         SleepSummary summary = new SleepSummary();
-        for (Sleep sleep : sleepRecords) {
-            LocalDate sleepDate = sleep.getSleepDate();
-            LocalDateTime intervalDateTime = null;
-
-            switch (periodType.toLowerCase()) {
-                case "day":
-                    intervalDateTime = sleepDate.atStartOfDay().truncatedTo(ChronoUnit.HOURS);
-                    break;
-                case "week":
-                case "month":
-                    intervalDateTime = sleepDate.atStartOfDay().truncatedTo(ChronoUnit.DAYS);
-                    break;
-                case "half-year":
-                    intervalDateTime = sleepDate.withDayOfMonth(1).atStartOfDay().truncatedTo(ChronoUnit.MONTHS);
-                    break;
-            }
-
-            summary.add(intervalDateTime, sleep);
-        }
-
-        summary.calculateAverage();
+        summary.setLatestSleep(latestSleep);
+        summary.setTotalSleepDuration(totalSleepDuration);
+        summary.setAverageSleepDuration(averageSleepDuration);
 
         return summary;
     }

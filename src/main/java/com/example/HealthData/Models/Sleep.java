@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 @Entity
@@ -32,5 +33,6 @@ public class Sleep {
     private LocalDateTime sleepEnd;
 
     @Column(name = "sleep_date")
-    private LocalDate sleepDate;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date sleepDate;
 }

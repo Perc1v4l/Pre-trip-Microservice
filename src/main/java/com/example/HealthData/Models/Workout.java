@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 @Entity
@@ -35,5 +36,6 @@ public class Workout {
     private LocalDateTime workoutEnd;
 
     @Column(name = "workout_date")
-    private LocalDate workoutDate;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date workoutDate;
 }

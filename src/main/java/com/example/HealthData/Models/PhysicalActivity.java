@@ -1,11 +1,12 @@
 package com.example.HealthData.Models;
 
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.time.LocalDate;
+import java.util.Date;
 
 @Data
 @Entity
@@ -31,5 +32,6 @@ public class PhysicalActivity {
     private double calories;
 
     @Column(name = "activity_date")
-    private LocalDate activityDate;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date activityDate;
 }

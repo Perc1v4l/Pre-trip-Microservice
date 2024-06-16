@@ -7,10 +7,9 @@ import com.example.HealthData.Repositories.UserRepository;
 import com.example.HealthData.SummaryClasses.BodyMeasurementSummary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -35,59 +34,23 @@ public class BodyMeasurementService {
         return repository.save(measurement);
     }
 
-    public List<BodyMeasurement> getByPeriod(String userIdfv, LocalDate start, LocalDate end) {
-        return repository.findAllByUserIdfvAndMeasurementDateBetween(userIdfv, start, end);
-    }
+    @Transactional(readOnly = true)
+    public BodyMeasurementSummary getBodyMeasurementSummary(String idfv, Date startDate, Date endDate) {
+        List<BodyMeasurement> bodyMeasurementList = repository.findAllByUserIdfvAndMeasurementDateBetween(idfv, startDate, endDate);
 
-    public BodyMeasurementSummary getSummaryByPeriod(String userIdfv, String periodType) {
-        LocalDate now = LocalDate.now();
-        LocalDate startDate;
-
-        switch (periodType.toLowerCase()) {
-            case "day":
-                startDate = now;
-                break;
-            case "week":
-                startDate = now.minusWeeks(1);
-                break;
-            case "month":
-                startDate = now.minusMonths(1);
-                break;
-            case "half-year":
-                startDate = now.minusMonths(6);
-                break;
-            case "year":
-                startDate = now.minusYears(1);
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid period type: " + periodType);
+        if (bodyMeasurementList.isEmpty()) {
+            return null;
         }
 
-        List<BodyMeasurement> measurements = getByPeriod(userIdfv, startDate, now);
+        BodyMeasurement latestMeasurement = bodyMeasurementList.get(bodyMeasurementList.size() - 1);
+
+        double averageHeight = bodyMeasurementList.stream().mapToDouble(BodyMeasurement::getHeight).average().orElse(0);
+        double averageWeight = bodyMeasurementList.stream().mapToDouble(BodyMeasurement::getWeight).average().orElse(0);
 
         BodyMeasurementSummary summary = new BodyMeasurementSummary();
-        for (BodyMeasurement measurement : measurements) {
-            LocalDate measurementDate = measurement.getMeasurementDate();
-            LocalDateTime intervalDateTime = null;
-
-            switch (periodType.toLowerCase()) {
-                case "day":
-                    intervalDateTime = measurementDate.atStartOfDay().truncatedTo(ChronoUnit.HOURS);
-                    break;
-                case "week":
-                case "month":
-                    intervalDateTime = measurementDate.atStartOfDay().truncatedTo(ChronoUnit.DAYS);
-                    break;
-                case "half-year":
-                case "year":
-                    intervalDateTime = measurementDate.withDayOfMonth(1).atStartOfDay().truncatedTo(ChronoUnit.MONTHS);
-                    break;
-            }
-
-            summary.add(intervalDateTime, measurement);
-        }
-
-        summary.calculateAverage();
+        summary.setLatestMeasurement(latestMeasurement);
+        summary.setAverageHeight(averageHeight);
+        summary.setAverageWeight(averageWeight);
 
         return summary;
     }
