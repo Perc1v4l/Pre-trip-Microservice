@@ -19,8 +19,8 @@ public class WorkoutController {
 
     @GetMapping("/data")
     public ResponseEntity<?> getWorkoutData(@RequestParam String idfv,
-                                            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date startDate,
-                                            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date endDate) {
+                                            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate,
+                                            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate) {
         try {
             WorkoutSummary summary = service.getWorkoutSummary(idfv, startDate, endDate);
             if (summary == null) {

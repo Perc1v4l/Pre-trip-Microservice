@@ -20,8 +20,8 @@ public class SleepController {
 
     @GetMapping("/data")
     public ResponseEntity<?> getSleepData(@RequestParam String idfv,
-                                          @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date startDate,
-                                          @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date endDate) {
+                                          @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate,
+                                          @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate) {
         try {
             SleepSummary summary = service.getSleepSummary(idfv, startDate, endDate);
             if (summary == null) {
